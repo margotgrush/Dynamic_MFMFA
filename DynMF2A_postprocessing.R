@@ -234,6 +234,7 @@ table(z,SN1)
 
 # relabelling partition and get the new permutation order
 ordering <- SN1
+
 if (sum(Y[1,z]==Y[1,ordering])!=T) {
   TAB <-table(z,ordering)
   T1 <- dim(TAB)[1]
@@ -243,23 +244,12 @@ if (sum(Y[1,z]==Y[1,ordering])!=T) {
       z_reord[i] <- which(TAB[i,]!=0)
   }
   
-  new.index <- NULL
-  j <- 1
-  for (i in unique(ordering)) {
-    tmp <- rep(j, length(ordering[ordering == i]))
-    ordering <- replace(ordering, list=which(ordering==i), LETTERS[j])
-    j <- j + 1
-  }
-  
-  for (l in 1:max(SN1)) {
-    ordering <- replace(ordering, list=which(ordering==LETTERS[l]), l)
-  }
-  ordering <-as.numeric(ordering)
-}
 
 # print new confusion matrix
-table(z,ordering)
-
+ordering <- z_reord[SN1]
+SN1 <- ordering
+table(z, SN1)
+}
 
 # check labelling for simulation datasets
 #library(mclust)
