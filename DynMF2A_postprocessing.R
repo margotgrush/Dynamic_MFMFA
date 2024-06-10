@@ -232,7 +232,8 @@ table(z,SN1)
 
 ###  align the clustering order with the order of the simulated clusters
 
-# relabelling partition and get the new permutation order
+# relabelling partition and get the new permutation order 
+{
 ordering <- SN1
 
 if (sum(Y[1,z]==Y[1,ordering])!=T) {
@@ -240,10 +241,10 @@ if (sum(Y[1,z]==Y[1,ordering])!=T) {
   T1 <- dim(TAB)[1]
   T2 <- dim(TAB)[2]
   z_reord=rep(0,Mod)
-  for ( i in 1:T1) {
-      z_reord[i] <- which(TAB[i,]!=0)
+  for ( i in 1:T2) {
+      z_reord[i] <- which(TAB[,i]!=0)
   }
-  
+}  
 
 # print new confusion matrix
 ordering <- z_reord[SN1]
