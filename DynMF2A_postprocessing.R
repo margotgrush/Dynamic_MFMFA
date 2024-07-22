@@ -411,7 +411,7 @@ for (g in 1:ITER) {
 
   perm = matrix(NA, nrow=Mod, ncol=H)
   for (j in 1:Mod) {
-    perm[j,] <- order(tau_reord1[[g]][j,], decreasing=T)
+    perm[j,] <- order(tau_reord1[[g]][j,], decreasing=TRUE)
     
     tau_reord1_ord[[g]][j,] <- tau_reord1[[g]][j,perm[j,]]
     I_reord1_ord[[g]][j,] <- I_reord1[[g]][j,perm[j,]]
@@ -480,7 +480,7 @@ Omega_m2<- apply(OM2,c(1:2),mean)
 Omega_m3<- apply(OM3,c(1:2),mean)
 
 # plot heat matrices of Omegas
-library(infinitefactor)
+require(infinitefactor)
 plotmat(Omega_m1)
 plotmat(Omega_m2)
 plotmat(Omega_m3)

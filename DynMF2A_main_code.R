@@ -1,17 +1,16 @@
 #########################################################################################################
 #               Sampler for Dynamic Mixture of Finite Mixtures of Factor Analysers model                #
 #########################################################################################################
-
-# libraries
+# required packages
 {
-  library(MASS)
-  library(mvtnorm)
-  library(bayesm)
-  library(abind)
-  library(MCMCpack)
-  library(mclust)
-  library(openxlsx)
-  library(FlexDir)
+  require(MASS)
+  require(mvtnorm)
+  require(bayesm)
+  require(abind)
+  require(MCMCpack)
+  require(mclust)
+  require(openxlsx)
+  require(FlexDir)
 }
 
 #########################################################################################################
@@ -124,7 +123,7 @@ Nsim = 50000 # number of iterations for the Gibbs sampler to run
     ssl=rbind(slab, spike)  
     # sample initial values of thetas
     for (h in 1:(H)) {
-      theta[[1]][j,h]=sample(ssl[,h], 1, prob=probs[,h], replace=T)
+      theta[[1]][j,h]=sample(ssl[,h], 1, prob=probs[,h], replace=TRUE)
     }}
   
   # initialing factor loadings
@@ -197,7 +196,7 @@ for (g in 2:Nsim) { # open Gibbs sampler
   S[[g]] = rep(0,T)
   
   mat = sapply(1:k[g-1], function(j) eta[[g-1]][j] * dmvnorm(t(Y), means[[g-1]][j,], as.matrix(Omega[[g-1]][,,j])))
-  S[[g]] = apply(mat, 1, function(x) sample(1:k[g-1], 1, prob = x,replace=T))
+  S[[g]] = apply(mat, 1, function(x) sample(1:k[g-1], 1, prob = x, replace=TRUE))
   
   # step 1 (b)
   N[[g]] = tabulate(S[[g]], k[g-1])
@@ -300,7 +299,7 @@ for (g in 2:Nsim) { # open Gibbs sampler
     
     # sampling binary indicators from a categorical distribution 
     pt <- rbind(pt8, ptth); xx=c(0,1)
-    I[[g]][j,] <-apply(pt,2, function(x) sample(xx,1,prob=x, replace=T))
+    I[[g]][j,] <-apply(pt,2, function(x) sample(xx,1,prob=x, replace=TRUE))
     
     
     # Step 7 - sampling the effective number of active columns
@@ -384,7 +383,7 @@ for (g in 2:Nsim) { # open Gibbs sampler
   labp <- log(a_stick[g-1]) + rnorm(1,0,s_a)
   abp <- exp(labp)
   # function to calculate prior distribution of a_stick
-  logpab <- function(x) dgamma(x, shape=a_a, rate=b_a, log=T)
+  logpab <- function(x) dgamma(x, shape=a_a, rate=b_a, log=TRUE)
   # calculation ratio of the proposal and previous values
   logratio <- H_slab*(log(abp/(abp+H)) - log(a_stick[g-1]/(a_stick[g-1]+H))) + H_inf*(log(H/(abp+H)) - log(H/(a_stick[g-1]+H))) + logpab(abp) - logpab(a_stick[g-1])
   ratio[g]=exp(logratio)
@@ -417,7 +416,7 @@ for (g in 2:Nsim) { # open Gibbs sampler
   pK[1:(k_plus[g]-1)]=0
   
   # sample new K
-  k[g] = sample(1:trunc,1,prob=pK, replace=T)
+  k[g] = sample(1:trunc,1,prob=pK, replace=TRUE)
   
   # Block 3 (b)
   # MH step to sample A - Dirichlet parameter   
@@ -426,7 +425,7 @@ for (g in 2:Nsim) { # open Gibbs sampler
   la_p <- log(a[g-1]) + rnorm(1, 0, s)
   a_p <- exp(la_p)
   # function to calculate prior distribution p(a)
-  logpa <- function(x) df(x, df1=adf1, df2=adf2, log=T)
+  logpa <- function(x) df(x, df1=adf1, df2=adf2, log=TRUE)
   # function to calculate posterior distribution p(a|C,K)
   #first ratio
   logpa1 <- function(x) lgamma(x) - lgamma(T+x) + k_plus[g]*log(x)
@@ -482,7 +481,7 @@ for (g in 2:Nsim) { # open Gibbs sampler
       spike=1/rgamma(H, alpha_inf, rate=beta_inf[g])
       ssl=rbind(slab, spike)
       for (h in 1:H) {
-        theta_temp[j,h] = sample(ssl[,h], 1, prob=probs[,h], replace=T)
+        theta_temp[j,h] = sample(ssl[,h], 1, prob=probs[,h], replace=TRUE)
       }}
     theta[[g]] = rbind(theta[[g]], theta_temp)
     
@@ -512,64 +511,4 @@ for (g in 2:Nsim) { # open Gibbs sampler
   eta[[g]] <- MCMCpack::rdirichlet(n=1, alpha=rep(et))
   
 } # ending Gibbs sampler
-
-#########################################################################################################
-#                                                 Results                                               #
-#########################################################################################################
-#par(mfrow = c(1,1))
-Burnin = 0.2*Nsim
-k
-k_plus 
-# checking Dirichlet parameter a
-plot(a, type="l")
-mean(a[Burnin:Nsim])
-# checking IBP parameter a_stick
-plot(a_stick, type="l")
-mean(a_stick[Burnin:Nsim])
-# checking densities
-plot(density(a))
-plot(density(a_stick))
-# checking k and k_plus
-# k
-plot(k[Burnin:Nsim], type="l")
-mean(k[Burnin:Nsim])
-# k_plus
-plot(k_plus[Burnin:Nsim], type="l")
-mean(k_plus[Burnin:Nsim])
-k1 <- k_plus[Burnin:Nsim]
-# thinning k (optional)
-k.new = k1[seq(1, length(k1), 5)]
-plot(k.new, type="l")
-mean(k.new)
-sd(k.new)
-#mode
-getmode <- function(v) {
-  uniqv <- unique(v)
-  uniqv[which.max(tabulate(match(v, uniqv)))]
-}
-print(getmode(k_plus[Burnin:Nsim]))
-print(getmode(k.new))
-
-# checking convergence
-plot(cumsum(k[1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")
-plot(cumsum(k_plus[1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")
-plot(cumsum(a[1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")
-plot(cumsum(a_stick[1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")
-plot(cumsum(beta_inf[1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")
-plot(cumsum(betath[1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")
-for (i in 1:p) {plot(cumsum(bxi[i,1:Nsim])/(1:Nsim), lwd=2, ty="l", xlim=c(0,Nsim), xlab="Iterations", ylab="")}
-######################################################################################################################
-
-####Posterior of K:
-par(mfrow = c(1,1))
-p_K=tabulate(k[1:Nsim],nbins=max(k[1:Nsim]))/Nsim;round(p_K,digits=2);
-barplot(p_K/sum(p_K), xlab = "K", names=1:length(p_K), ylab = "p(K|y)", xlim=c(0, 30), ylim=c(0, 0.6))
-#K_ is estimator of K:
-K_=which.max(tabulate(k,nbins=max(k)));K_
-mean(k[1:Nsim])
-median(k[1:Nsim])
-quantile(k[1:Nsim],probs=c(0.025,0.975))
-####################################################################################################################
-
-
 

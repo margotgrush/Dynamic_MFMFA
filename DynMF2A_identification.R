@@ -10,15 +10,11 @@
 # libraries
 {
 # MatchAlign identification required the package "infinitefactor"
-library(infinitefactor)
+require(infinitefactor)
 # GLT rotation requires package "ecoometric.factor.identification"
-#install.packages("devtools")
-#library(devtools)
+require(devtools)
+require(RcppArmadillo)
 #devtools::install_github("hdarjus/econometric.factor.identification")
-  
-#install.packages("RcppArmadillo")
-#library(RcppArmadillo)
-  
 #install.packages("econometric.factor.identification_0.1.0.tar", type = "source", repos = NULL)
 #library(econometric.factor.identification)
 }

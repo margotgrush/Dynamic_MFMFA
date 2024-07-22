@@ -5,8 +5,8 @@ rm(list=ls())
 # Simulaton study 1 
 # Simulated data set with 3 clusters and 4 factors in each cluster
 {
-  library(MASS)
-  library(mvtnorm)
+  require(MASS)
+  require(mvtnorm)
   # simulated data set K = 3, H = 3
   # cluster weights
   w = c(1/3, 1/3, 1/3)
@@ -85,8 +85,8 @@ rm(list=ls())
 # Simulated data set with unbalanced clusters - dense loadings
 # 6 clusters of various sizes and with various number of factors
 {
-  library(MASS)
-  library(mvtnorm)
+  require(MASS)
+  require(mvtnorm)
   # simulated data set K = 6, H = drawn randomly from (0, 6)
   # cluster weights
   w = c(0.25, 0.25, 0.2, 0.15, 0.1, 0.05)
@@ -150,8 +150,8 @@ rm(list=ls())
 
 #Identification data set with block Lambda
 {
-  library(MASS)
-  library(mvtnorm)
+  require(MASS)
+  require(mvtnorm)
   set.seed(123)
   # simulated data set K = 3, H = 3
   # cluster weights
@@ -170,7 +170,7 @@ rm(list=ls())
         # sample bi
         indic=c(1,0)
         probs=c(0.2, 1-0.2)
-        bi=sample(indic, 1, prob=probs, replace=T)
+        bi=sample(indic, 1, prob=probs, replace=TRUE)
         #sample factor loadings
         Lambda[i,h,g] <- (1 + 0.1*rnorm(1,0,1))*(-1)^bi
       }
@@ -182,7 +182,7 @@ rm(list=ls())
         # sample bi
         indic=c(1,0)
         probs=c(0.2, 1-0.2)
-        bi=sample(indic, 1, prob=probs, replace=T)
+        bi=sample(indic, 1, prob=probs, replace=TRUE)
         #sample factor loadings
         Lambda[i,h,g] <- (1 + 0.1*rnorm(1,0,1))*(-1)^bi
       } 

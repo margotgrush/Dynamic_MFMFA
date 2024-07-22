@@ -5,7 +5,7 @@ rm(list=ls())
 
 # Coffee data set
 {
-  library(pgmm)
+  require(pgmm)
   data(coffee)
   data <- coffee
   data1 <- data[,-c(1, 2)]
@@ -28,7 +28,7 @@ rm(list=ls())
 
 # Italian wines data set
 {
-  library(pgmm)
+  require(pgmm)
   data(wine)
   data <- wine
   data1 <- data[,-1]
@@ -55,7 +55,7 @@ rm(list=ls())
 
 # Olive oils data set
 {
-  library(FlexDir)
+  require(FlexDir)
   data <- oliveoil
   data1 <- data[,-c(1, 2)]
   # calculate labels assignment according to areas
