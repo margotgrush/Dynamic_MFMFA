@@ -18,11 +18,11 @@ rm(list=ls())
 #                                            Variables initialisatons                                            #
 ##################################################################################################################
 # setting the number of iterations for the Gibbs sampler chain
-Nsim = 35000
+Nsim = 50000
 # setting the initial values and priors for cluster and factor parameters
 {
 ###############################              mixture model parameters              ###############################                       
-k0=20
+k0=12
 k=rep(0, Nsim)
 k[1] <- k0 # initiating k
 k_plus = rep(0, Nsim)
