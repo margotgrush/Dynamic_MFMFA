@@ -91,7 +91,7 @@ rm(list=ls())
   # cluster weights
   w = c(0.25, 0.25, 0.2, 0.15, 0.1, 0.05)
   #number of clusters, factors and variables
-  G = 6; P=20
+  G = 6; P=30
   # number of observations
   T=700
   # draw randomly J
